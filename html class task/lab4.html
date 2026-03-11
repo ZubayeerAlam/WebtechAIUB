@@ -1,46 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Lab Task 04</title>
 
     <style>
-        body{
+        body {
             font-family: Arial, sans-serif;
             background-color: #f4f6fb;
             padding: 40px;
         }
 
-        h2{
+        h2 {
             text-align: center;
             margin-bottom: 30px;
         }
 
-        form{
-            max-width: 500px;
-            margin: auto;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        fieldset{
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        legend{
+        legend {
             font-weight: bold;
         }
 
-        label{
+        label {
             font-weight: 500;
         }
 
-        input, select{
+        input,
+        select {
             width: 100%;
             padding: 8px;
             margin-top: 5px;
@@ -50,21 +36,21 @@
         }
 
         .gender-group,
-        .skills-group{
+        .skills-group {
             margin-bottom: 15px;
         }
 
         .gender-group input,
-        .skills-group input{
+        .skills-group input {
             width: auto;
             margin-right: 5px;
         }
 
-        .buttons{
+        .buttons {
             text-align: center;
         }
 
-        .buttons input{
+        .buttons input {
             width: 120px;
             margin: 10px;
             cursor: pointer;
@@ -73,87 +59,88 @@
             border: none;
         }
 
-        .buttons input[type="reset"]{
+        .buttons input[type="reset"] {
             background: #888;
         }
-
     </style>
 
 </head>
+
 <body>
 
-<h2>Student Registration Form</h2>
+    <h2>Student Registration Form</h2>
 
-<form action="#" method="post">
 
-    <fieldset>
 
-        <legend>Personal Information</legend>
 
-        <label for="fullname">Full Name</label>
-        <input type="text" id="fullname" name="fullname" required>
 
-        <label for="email">Email Address</label>
-        <input type="email" id="email" name="email" required>
+    <legend>Personal Information</legend>
 
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" required>
+    <label for="fullname">Full Name</label>
+    <input type="text" id="fullname" name="fullname" required>
 
-        <label for="dob">Date of Birth</label>
-        <input type="date" id="dob" name="dob">
+    <label for="email">Email Address</label>
+    <input type="email" id="email" name="email" required>
 
-        <div class="gender-group">
-            <p>Gender</p>
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" required>
 
-            <input type="radio" id="male" name="gender" value="male">
-            <label for="male">Male</label><br>
+    <label for="dob">Date of Birth</label>
+    <input type="date" id="dob" name="dob">
 
-            <input type="radio" id="female" name="gender" value="female">
-            <label for="female">Female</label><br>
+    <div class="gender-group">
+        <p>Gender</p>
 
-            <input type="radio" id="other" name="gender" value="other">
-            <label for="other">Other</label>
-        </div>
+        <input type="radio" id="male" name="gender" value="male">
+        <label for="male">Male</label><br>
 
-    </fieldset>
+        <input type="radio" id="female" name="gender" value="female">
+        <label for="female">Female</label><br>
 
-    <fieldset>
+        <input type="radio" id="other" name="gender" value="other">
+        <label for="other">Other</label>
+    </div>
 
-        <legend>Academic Information</legend>
 
-        <label for="department">Department</label>
-        <select id="department" name="department">
-            <option value="">-- Select Department --</option>
-            <option value="cse">CSE</option>
-            <option value="eee">EEE</option>
-            <option value="bba">BBA</option>
-            <option value="english">English</option>
-        </select>
 
-        <div class="skills-group">
-            <p>Skills</p>
 
-            <input type="checkbox" id="html" name="skills" value="html">
-            <label for="html">HTML</label><br>
 
-            <input type="checkbox" id="css" name="skills" value="css">
-            <label for="css">CSS</label><br>
+    <legend>Academic Information</legend>
 
-            <input type="checkbox" id="javascript" name="skills" value="javascript">
-            <label for="javascript">JavaScript</label><br>
+    <label for="department">Department</label>
+    <select id="department" name="department">
+        <option value="">-- Select Department --</option>
+        <option value="cse">CSE</option>
+        <option value="eee">EEE</option>
+        <option value="bba">BBA</option>
+        <option value="english">English</option>
+    </select>
 
-            <input type="checkbox" id="cpp" name="skills" value="cpp">
-            <label for="cpp">C++</label>
-        </div>
+    <div class="skills-group">
+        <p>Skills</p>
 
-    </fieldset>
+        <input type="checkbox" id="html" name="skills" value="html">
+        <label for="html">HTML</label><br>
+
+        <input type="checkbox" id="css" name="skills" value="css">
+        <label for="css">CSS</label><br>
+
+        <input type="checkbox" id="javascript" name="skills" value="javascript">
+        <label for="javascript">JavaScript</label><br>
+
+        <input type="checkbox" id="cpp" name="skills" value="cpp">
+        <label for="cpp">C++</label>
+    </div>
+
+
 
     <div class="buttons">
         <input type="submit" value="Submit">
         <input type="reset" value="Reset">
     </div>
 
-</form>
+
 
 </body>
+
 </html>
