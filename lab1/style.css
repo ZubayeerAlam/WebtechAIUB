@@ -1,0 +1,13 @@
+*{
+    margin:0;
+    padding:0;
+    font-family: Arial, sans-serif;
+}
+
+#Title{
+    color: white;
+    background-color: gray;
+    font-size: 40px;
+    text-align:center;
+    padding:20px;
+}
