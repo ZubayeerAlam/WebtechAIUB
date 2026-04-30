@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Directory</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --border: #1e1e2e;
+      --accent: #7c6aff;
+      --accent2: #ff6a9b;
+      --text: #e8e6f0;
+      --muted: #5a5870;
+      --card-bg: #13131c;
+      --glow: rgba(124, 106, 255, 0.15);
+    }
+
+    html,
+    body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 60px 20px 80px;
+      background-image:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(124, 106, 255, 0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 30% at 80% 80%, rgba(255, 106, 155, 0.06) 0%, transparent 60%);
+    }
+
+    /* ── Header ── */
+    header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+
+    .label {
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .label::before,
+    .label::after {
+      content: '';
+      display: block;
+      width: 32px;
+      height: 1px;
+      background: var(--accent);
+      opacity: 0.5;
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.4rem, 5vw, 3.8rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 0.03em;
+    }
+
+    /* ── Button ── */
+    .fetch-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 32px;
+      background: var(--accent);
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 0 0 0 var(--glow);
+    }
+
+    .fetch-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent);
+      pointer-events: none;
+    }
+
+    .fetch-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(124, 106, 255, 0.35);
+    }
+
+    .fetch-btn:active {
+      transform: translateY(0);
+    }
+
+    .fetch-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-icon {
+      font-size: 16px;
+    }
+
+    /* ── Spinner ── */
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ── Output section ── */
+    #output {
+      width: 100%;
+      max-width: 860px;
+      margin-top: 48px;
+    }
+
+    .output-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      display: none;
+    }
+
+    .output-header.visible {
+      display: flex;
+    }
+
+    .output-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .badge {
+      background: rgba(124, 106, 255, 0.12);
+      border: 1px solid rgba(124, 106, 255, 0.25);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Cards grid ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(18px);
+      animation: cardIn 0.4s forwards;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+      border-color: rgba(124, 106, 255, 0.35);
+      box-shadow: 0 4px 24px rgba(124, 106, 255, 0.1);
+    }
+
+    .card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .card:hover::after {
+      opacity: 1;
+    }
+
+    @keyframes cardIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card:nth-child(1) {
+      animation-delay: 0.05s;
+    }
+
+    .card:nth-child(2) {
+      animation-delay: 0.12s;
+    }
+
+    .card:nth-child(3) {
+      animation-delay: 0.19s;
+    }
+
+    .card:nth-child(4) {
+      animation-delay: 0.26s;
+    }
+
+    .card:nth-child(5) {
+      animation-delay: 0.33s;
+    }
+
+    .card:nth-child(6) {
+      animation-delay: 0.40s;
+    }
+
+    .card-id {
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .card-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .card-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .field-label {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .field-value {
+      font-size: 12px;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .cgpa-bar {
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin-top: 14px;
+      overflow: hidden;
+    }
+
+    .cgpa-fill {
+      height: 100%;
+      border-radius: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      width: 0;
+      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .cgpa-label {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 6px;
+    }
+
+    .cgpa-label span {
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .cgpa-label strong {
+      font-size: 11px;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* ── Error state ── */
+    .error-box {
+      border: 1px solid rgba(255, 106, 155, 0.3);
+      background: rgba(255, 106, 155, 0.06);
+      border-radius: 6px;
+      padding: 20px 24px;
+      color: var(--accent2);
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .error-icon {
+      font-size: 18px;
+    }
+
+    /* ── JSON preview ── */
+    .json-toggle {
+      margin-top: 28px;
+      width: 100%;
+    }
+
+    .json-toggle summary {
+      list-style: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 8px 0;
+      user-select: none;
+      transition: color 0.15s;
+    }
+
+    .json-toggle summary:hover {
+      color: var(--text);
+    }
+
+    .json-toggle summary::marker {
+      display: none;
+    }
+
+    .toggle-arrow {
+      transition: transform 0.2s;
+    }
+
+    details[open] .toggle-arrow {
+      transform: rotate(90deg);
+    }
+
+    pre {
+      margin-top: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 20px;
+      font-size: 12px;
+      line-height: 1.7;
+      color: #a0a0c0;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="label">AJAX · PHP · JSON</div>
+    <h1>Student Directory</h1>
+    <p class="subtitle">Fetch live records without a page reload</p>
+  </header>
+
+  <button class="fetch-btn" id="fetchBtn" onclick="fetchStudents()">
+    <span class="btn-icon">⟳</span>
+    <div class="spinner" id="spinner"></div>
+    <span id="btnText">Fetch Students</span>
+  </button>
+
+  <section id="output"></section>
+
+  <script>
+    function fetchStudents() {
+      const btn = document.getElementById('fetchBtn');
+      const spinner = document.getElementById('spinner');
+      const btnText = document.getElementById('btnText');
+      const output = document.getElementById('output');
+
+      // Loading state
+      btn.disabled = true;
+      spinner.style.display = 'block';
+      btnText.textContent = 'Loading…';
+      output.innerHTML = '';
+
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', 'students.php', true);
+      
+      xhr.setRequestHeader('Accept', 'application/json');
+
+      xhr.onload = function () {
+        btn.disabled = false;
+        spinner.style.display = 'none';
+        btnText.textContent = 'Refresh';
+
+        if (xhr.status === 200) {
+          try {
+            const data = JSON.parse(xhr.responseText);
+            renderStudents(data);
+          } catch (e) {
+            renderError('Invalid JSON response from server.');
+          }
+        } else {
+          renderError(`Server returned status ${xhr.status}.`);
+        }
+      };
+
+      xhr.onerror = function () {
+        btn.disabled = false;
+        spinner.style.display = 'none';
+        btnText.textContent = 'Retry';
+        renderError('Network error — is the PHP server running?');
+      };
+
+      xhr.send();
+    }
+
+    function renderStudents(students) {
+      const output = document.getElementById('output');
+
+      const header = `
+        <div class="output-header visible">
+          <span class="output-title">Results</span>
+          <span class="badge">${students.length} students</span>
+        </div>`;
+
+      const cards = students.map(s => {
+        const cgpaPct = ((parseFloat(s.cgpa) / 4.0) * 100).toFixed(1);
+        return `
+          <div class="card">
+            <div class="card-id">ID · ${s.id}</div>
+            <div class="card-name">${s.name}</div>
+            <div class="card-fields">
+              <div class="field">
+                <span class="field-label">Department</span>
+                <span class="field-value">${s.department}</span>
+              </div>
+              <div class="field">
+                <span class="field-label">Semester</span>
+                <span class="field-value">${s.semester}</span>
+              </div>
+            </div>
+            <div class="cgpa-bar">
+              <div class="cgpa-fill" data-pct="${cgpaPct}" style="width:0%"></div>
+            </div>
+            <div class="cgpa-label">
+              <span>CGPA</span>
+              <strong>${s.cgpa} / 4.00</strong>
+            </div>
+          </div>`;
+      }).join('');
+
+      const jsonBlock = `
+        <details class="json-toggle">
+          <summary>
+            <span class="toggle-arrow">▶</span>
+            Raw JSON Response
+          </summary>
+          <pre>${escapeHtml(JSON.stringify(students, null, 2))}</pre>
+        </details>`;
+
+      output.innerHTML = header + `<div class="cards-grid">${cards}</div>` + jsonBlock;
+
+      // Animate CGPA bars after paint
+      requestAnimationFrame(() => {
+        document.querySelectorAll('.cgpa-fill').forEach(el => {
+          el.style.width = el.dataset.pct + '%';
+        });
+      });
+    }
+
+    function renderError(msg) {
+      document.getElementById('output').innerHTML = `
+        <div class="error-box">
+          <span class="error-icon">⚠</span>
+          <span>${msg}</span>
+        </div>`;
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+  </script>
+</body>
+
+</html>
